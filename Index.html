@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colegio Sagrada Familia | Enlaces Oficiales</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter y Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#163863',
+                            900: '#0f294a',
+                            950: '#08182e',
+                        },
+                        gold: {
+                            400: '#e5c158',
+                            500: '#d4af37',
+                            600: '#b39024',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2.5s infinite linear',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+            will-change: transform;
+        }
+
+        .tilt-content {
+            transform: translateZ(18px);
+        }
+
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stagger-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-shine {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 255, 255, 0) 65%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .tilt-card:hover .card-shine {
+            opacity: 1;
+        }
+
+        .dark .card-shine {
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(212, 175, 55, 0.18) 0%,
+                rgba(255, 255, 255, 0) 65%
+            );
+        }
+
+        #qrcode img, #qrcode canvas {
+            margin: 0 auto;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 dark:bg-navy-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 relative selection:bg-gold-500 selection:text-navy-950">
+
+    <!-- Fondo Canvas Interactivo con Parallax -->
+    <canvas id="bg-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Resplandores ambientales -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-navy-900/5 dark:bg-gold-500/5 rounded-full blur-3xl pointer-events-none z-0"></div>
+
+    <!-- Barra Superior: QR a la izquierda, espacio reservado en el centro y Tema a la derecha -->
+    <header class="relative z-20 max-w-xl mx-auto px-4 pt-5 flex items-center justify-between gap-3">
+        <!-- Botón Código QR a la izquierda -->
+        <button id="btn-qr" type="button" aria-label="Mostrar código QR"
+            class="flex-shrink-0 group flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/85 dark:bg-navy-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-700/80 shadow-sm hover:shadow-md hover:border-gold-500 transition-all duration-300 text-xs font-semibold text-navy-900 dark:text-slate-100 active:scale-95">
+            <i data-lucide="qr-code" class="w-4 h-4 text-gold-600 dark:text-gold-400 group-hover:rotate-12 transition-transform"></i>
+            <span>Código QR</span>
+        </button>
+
+        <!-- Espacio reservado limpio para segundo logo horizontal (ej. <img src="banner-logo.png" class="max-h-9 w-auto object-contain">) -->
+        <div id="banner-logo-slot" class="flex-1 flex items-center justify-center min-h-[36px] px-2"></div>
+
+        <!-- Interruptor de Tema Claro / Oscuro a la derecha -->
+        <button id="btn-theme" type="button" aria-label="Cambiar modo claro u oscuro"
+            class="flex-shrink-0 w-9 h-9 rounded-full bg-white/85 dark:bg-navy-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-700/80 shadow-sm hover:shadow-md hover:border-gold-500 flex items-center justify-center transition-all duration-300 text-navy-900 dark:text-gold-400 active:scale-90">
+            <i id="theme-icon-moon" data-lucide="moon" class="w-4 h-4"></i>
+            <i id="theme-icon-sun" data-lucide="sun" class="w-4 h-4 hidden"></i>
+        </button>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="relative z-10 max-w-xl mx-auto px-4 pt-4 pb-14 flex flex-col items-center">
+
+        <!-- Encabezado Institucional -->
+        <section class="w-full text-center mb-7 stagger-item">
+            <div class="relative inline-block mb-4 animate-float">
+                <div class="absolute -inset-1.5 bg-gradient-to-tr from-navy-900 via-gold-500 to-navy-800 rounded-full blur opacity-35 dark:opacity-55 animate-pulse-slow"></div>
+                <div id="main-logo-wrapper" class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-white dark:bg-navy-900 p-1 shadow-xl border-2 border-gold-500 flex items-center justify-center overflow-hidden">
+                    <!-- Escudo Institucional SVG de respaldo (puedes reemplazarlo por <img src="logo.png" alt="Escudo Colegio Sagrada Familia" class="w-full h-full object-contain rounded-full">) -->
+                    <svg viewBox="0 0 120 120" class="w-full h-full" xmlns="http://www.w3.org/2000/svg" aria-label="Escudo Colegio Sagrada Familia">
+                        <defs>
+                            <linearGradient id="navyShield" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#163863"/>
+                                <stop offset="100%" stop-color="#0f294a"/>
+                            </linearGradient>
+                            <linearGradient id="goldTrim" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#f3d87a"/>
+                                <stop offset="50%" stop-color="#d4af37"/>
+                                <stop offset="100%" stop-color="#a6831c"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="60" cy="60" r="56" fill="url(#navyShield)"/>
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="url(#goldTrim)" stroke-width="1.5" stroke-dasharray="3 2"/>
+                        <path d="M34 31 H86 V62 C86 80 60 93 60 93 C60 93 34 80 34 62 Z" fill="#ffffff" fill-opacity="0.08" stroke="url(#goldTrim)" stroke-width="2.5"/>
+                        <path d="M43 58 C48 56 55 57 60 61 C65 57 72 56 77 58 V72 C72 70 65 71 60 75 C55 71 48 70 43 72 Z" fill="none" stroke="#ffffff" stroke-width="2" stroke-linejoin="round"/>
+                        <line x1="60" y1="61" x2="60" y2="75" stroke="#ffffff" stroke-width="1.8"/>
+                        <path d="M60 38 L62 44 L68 46 L62 48 L60 54 L58 48 L52 46 L58 44 Z" fill="url(#goldTrim)"/>
+                        <text x="60" y="86" text-anchor="middle" fill="#e5c158" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="9.5" letter-spacing="1.5">CSF</text>
+                    </svg>
+                </div>
+                <span title="Cuenta Institucional Verificada" class="absolute bottom-1 right-1 w-7 h-7 rounded-full bg-gold-500 text-navy-950 border-2 border-white dark:border-navy-900 flex items-center justify-center shadow-md">
+                    <i data-lucide="badge-check" class="w-4 h-4"></i>
+                </span>
+            </div>
+
+            <h1 class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-navy-900 dark:text-white mb-1">
+                Colegio Sagrada Familia
+            </h1>
+
+            <p class="text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 mb-3">
+                <i data-lucide="map-pin" class="w-4 h-4 text-gold-600 dark:text-gold-400"></i>
+                <span>Punto Fijo • Falcón, Venezuela</span>
+            </p>
+
+            <!-- Badge Institucional Interactivo -->
+            <button id="badge-motto" type="button"
+                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy-900/5 dark:bg-gold-500/10 border border-navy-900/15 dark:border-gold-500/30 text-xs font-semibold text-navy-900 dark:text-gold-400 hover:bg-navy-900/10 dark:hover:bg-gold-500/20 transition-all active:scale-95">
+                <span class="w-2 h-2 rounded-full bg-gold-500 animate-ping"></span>
+                <span id="motto-text">Educación con Valores y Excelencia</span>
+            </button>
+        </section>
+
+        <!-- Tarjetas de Enlaces Oficiales (4 Canales) -->
+        <section class="w-full space-y-3.5">
+
+            <!-- 1) WhatsApp Directo -->
+            <div class="tilt-card stagger-item group relative w-full rounded-2xl p-4 sm:p-5 bg-white/95 dark:bg-navy-900/90 backdrop-blur-md border-2 border-emerald-500/50 dark:border-emerald-400/45 shadow-lg shadow-emerald-950/5 dark:shadow-black/30 hover:border-emerald-500 dark:hover:border-emerald-400 overflow-hidden">
+                <div class="card-shine"></div>
+                <div class="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent pointer-events-none"></div>
+
+                <div class="tilt-content flex items-center gap-3.5 sm:gap-4">
+                    <a href="https://wa.me/584146938985" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center gap-3.5 sm:gap-4 min-w-0">
+                        <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 border border-emerald-300/40">
+                            <svg class="w-7 h-7 fill-current" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm.029 18.88c-1.161 0-2.305-.292-3.318-.844l-3.677.964.984-3.595c-.607-1.052-.927-2.246-.926-3.468.001-3.825 3.113-6.937 6.937-6.937 1.856.001 3.598.723 4.907 2.034 1.31 1.311 2.031 3.054 2.03 4.908-.001 3.825-3.113 6.938-6.937 6.938z"/>
+                            </svg>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h2 class="font-display font-bold text-base sm:text-lg text-navy-900 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                                    WhatsApp Directo
+                                </h2>
+                                <span class="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
+                                    En Línea
+                                </span>
+                            </div>
+                            <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 truncate">
+                                +58 414-6938985
+                            </p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-1">
+                                Atención institucional y consultas rápidas
+                            </p>
+                        </div>
+                    </a>
+
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button type="button" data-copy-url="https://wa.me/584146938985" title="Copiar enlace de WhatsApp" aria-label="Copiar enlace de WhatsApp"
+                            class="btn-quick-copy w-9 h-9 rounded-full bg-emerald-50 dark:bg-navy-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center transition-all active:scale-90 border border-emerald-200/80 dark:border-emerald-700/50">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <a href="https://wa.me/584146938985" target="_blank" rel="noopener noreferrer" aria-label="Abrir WhatsApp"
+                            class="w-9 h-9 rounded-full bg-emerald-600 text-white hover:bg-emerald-500 flex items-center justify-center shadow-sm transition-all">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2) Portal Web Institucional -->
+            <div class="tilt-card stagger-item group relative w-full rounded-2xl p-4 sm:p-5 bg-white/90 dark:bg-navy-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-700/80 shadow-lg shadow-navy-900/5 dark:shadow-black/30 hover:border-gold-500 dark:hover:border-gold-400 overflow-hidden">
+                <div class="card-shine"></div>
+                <div class="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-gold-500/10 to-transparent pointer-events-none"></div>
+
+                <div class="tilt-content flex items-center gap-3.5 sm:gap-4">
+                    <a href="https://colegiosagradafamilia.com.ve/" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center gap-3.5 sm:gap-4 min-w-0">
+                        <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-navy-900 to-navy-800 text-gold-400 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 border border-gold-500/40">
+                            <svg class="w-7 h-7" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M2 12h20"/>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <h2 class="font-display font-bold text-base sm:text-lg text-navy-900 dark:text-white truncate group-hover:text-navy-800 dark:group-hover:text-gold-400 transition-colors">
+                                Portal Web Institucional
+                            </h2>
+                            <p class="text-xs font-medium text-gold-600 dark:text-gold-400 truncate">
+                                colegiosagradafamilia.com.ve
+                            </p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-1">
+                                Información académica, admisiones y noticias
+                            </p>
+                        </div>
+                    </a>
+
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button type="button" data-copy-url="https://colegiosagradafamilia.com.ve/" title="Copiar enlace del Portal Web" aria-label="Copiar enlace del Portal Web"
+                            class="btn-quick-copy w-9 h-9 rounded-full bg-slate-100 dark:bg-navy-800 hover:bg-gold-500/20 text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-gold-400 flex items-center justify-center transition-all active:scale-90">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <a href="https://colegiosagradafamilia.com.ve/" target="_blank" rel="noopener noreferrer" aria-label="Abrir Portal Web"
+                            class="w-9 h-9 rounded-full bg-navy-900 text-gold-400 hover:bg-navy-800 dark:bg-gold-500 dark:text-navy-950 flex items-center justify-center shadow-sm transition-all">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3) Instagram Oficial -->
+            <div class="tilt-card stagger-item group relative w-full rounded-2xl p-4 sm:p-5 bg-white/90 dark:bg-navy-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-700/80 shadow-lg shadow-navy-900/5 dark:shadow-black/30 hover:border-pink-500/70 dark:hover:border-pink-400/70 overflow-hidden">
+                <div class="card-shine"></div>
+                <div class="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-pink-500/10 to-transparent pointer-events-none"></div>
+
+                <div class="tilt-content flex items-center gap-3.5 sm:gap-4">
+                    <a href="https://www.instagram.com/colegiosagradafamilia.pf?fqnt=MTA1Y2s5bTFpOHRvaQ==" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center gap-3.5 sm:gap-4 min-w-0">
+                        <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-700 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 border border-white/25">
+                            <!-- Logo SVG Inline de Instagram (cámara, lente y punto) -->
+                            <svg class="w-7 h-7 text-white" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="2.5" y="2.5" width="19" height="19" rx="5" ry="5"/>
+                                <circle cx="12" cy="12" r="4.2"/>
+                                <circle cx="17.5" cy="6.5" r="1.15" fill="currentColor" stroke="none"/>
+                            </svg>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <h2 class="font-display font-bold text-base sm:text-lg text-navy-900 dark:text-white truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                                Instagram Oficial
+                            </h2>
+                            <p class="text-xs font-semibold text-pink-600 dark:text-pink-400 truncate">
+                                @colegiosagradafamilia.pf
+                            </p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-1">
+                                Actividades diarias, eventos y vida estudiantil
+                            </p>
+                        </div>
+                    </a>
+
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button type="button" data-copy-url="https://www.instagram.com/colegiosagradafamilia.pf?fqnt=MTA1Y2s5bTFpOHRvaQ==" title="Copiar enlace de Instagram" aria-label="Copiar enlace de Instagram"
+                            class="btn-quick-copy w-9 h-9 rounded-full bg-slate-100 dark:bg-navy-800 hover:bg-pink-500/15 text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 flex items-center justify-center transition-all active:scale-90">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <a href="https://www.instagram.com/colegiosagradafamilia.pf?fqnt=MTA1Y2s5bTFpOHRvaQ==" target="_blank" rel="noopener noreferrer" aria-label="Abrir Instagram"
+                            class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-pink-600 text-white hover:opacity-90 flex items-center justify-center shadow-sm transition-all">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4) Página de Facebook -->
+            <div class="tilt-card stagger-item group relative w-full rounded-2xl p-4 sm:p-5 bg-white/90 dark:bg-navy-900/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-700/80 shadow-lg shadow-navy-900/5 dark:shadow-black/30 hover:border-blue-500/70 dark:hover:border-blue-400/70 overflow-hidden">
+                <div class="card-shine"></div>
+                <div class="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-blue-500/10 to-transparent pointer-events-none"></div>
+
+                <div class="tilt-content flex items-center gap-3.5 sm:gap-4">
+                    <a href="https://www.facebook.com/share/1LF5RbQYu9/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center gap-3.5 sm:gap-4 min-w-0">
+                        <div class="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 border border-blue-300/35">
+                            <!-- Logo SVG Inline de Facebook (letra 'f' limpia y visible) -->
+                            <svg class="w-7 h-7 fill-current text-white" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14.5 8.5H16.8V5.2H14.1C11.3 5.2 9.8 6.8 9.8 9.5V11.6H7.5V15H9.8V21.5H13.3V15H16.1L16.5 11.6H13.3V9.8C13.3 8.9 13.7 8.5 14.5 8.5Z"/>
+                            </svg>
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <h2 class="font-display font-bold text-base sm:text-lg text-navy-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                Página de Facebook
+                            </h2>
+                            <p class="text-xs font-medium text-blue-600 dark:text-blue-400 truncate">
+                                Comunidad Educativa Oficial
+                            </p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-1">
+                                Comunicados, galerías y encuentros escolares
+                            </p>
+                        </div>
+                    </a>
+
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button type="button" data-copy-url="https://www.facebook.com/share/1LF5RbQYu9/?mibextid=wwXIfr" title="Copiar enlace de Facebook" aria-label="Copiar enlace de Facebook"
+                            class="btn-quick-copy w-9 h-9 rounded-full bg-slate-100 dark:bg-navy-800 hover:bg-blue-500/15 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 flex items-center justify-center transition-all active:scale-90">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <a href="https://www.facebook.com/share/1LF5RbQYu9/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Abrir Facebook"
+                            class="w-9 h-9 rounded-full bg-blue-600 text-white hover:bg-blue-500 flex items-center justify-center shadow-sm transition-all">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Pie de página institucional -->
+        <footer class="mt-10 text-center stagger-item">
+            <p class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                Formación con Valores y Excelencia Académica
+            </p>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+                © <span id="current-year"></span> U.E. Colegio Sagrada Familia • Punto Fijo, Falcón
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- Modal de Código QR Multi-Canal -->
+    <div id="qr-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-navy-950/75 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+        <div id="qr-modal-content" class="relative w-full max-w-md rounded-3xl bg-white dark:bg-navy-900 border border-slate-200 dark:border-slate-700 p-5 sm:p-6 shadow-2xl text-center transform scale-95 transition-transform duration-300">
+            <button id="btn-close-qr" type="button" aria-label="Cerrar modal QR"
+                class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-navy-800 text-slate-500 dark:text-slate-300 hover:bg-red-100 hover:text-red-600 flex items-center justify-center transition-colors">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <div class="w-11 h-11 mx-auto mb-2.5 rounded-2xl bg-navy-900 text-gold-400 flex items-center justify-center shadow-md border border-gold-500/40">
+                <i data-lucide="qr-code" class="w-5 h-5"></i>
+            </div>
+
+            <h3 class="font-display font-bold text-lg text-navy-900 dark:text-white">
+                Código QR Oficial
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 mb-4">
+                Alterna entre los canales para generar y descargar su código QR
+            </p>
+
+            <!-- Pestañas de canales -->
+            <div id="qr-tabs" class="flex flex-wrap items-center justify-center gap-1.5 mb-4">
+                <button type="button" data-qr-key="page"
+                    class="qr-tab active px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-navy-900 text-gold-400 dark:bg-gold-500 dark:text-navy-950 shadow-sm">
+                    Esta Página
+                </button>
+                <button type="button" data-qr-key="whatsapp"
+                    class="qr-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-slate-700">
+                    WhatsApp
+                </button>
+                <button type="button" data-qr-key="web"
+                    class="qr-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-slate-700">
+                    Web
+                </button>
+                <button type="button" data-qr-key="instagram"
+                    class="qr-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-slate-700">
+                    Instagram
+                </button>
+                <button type="button" data-qr-key="facebook"
+                    class="qr-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-slate-700">
+                    Facebook
+                </button>
+            </div>
+
+            <!-- Contenedor del QR generado -->
+            <div class="p-3.5 bg-white rounded-2xl border-2 border-dashed border-gold-500/60 inline-block shadow-inner mb-3">
+                <div id="qrcode"></div>
+            </div>
+
+            <div class="mb-4 px-3 py-2 rounded-xl bg-slate-50 dark:bg-navy-950/70 border border-slate-200/80 dark:border-slate-800">
+                <p id="qr-target-label" class="text-[11px] font-bold text-navy-900 dark:text-gold-400">
+                    Esta Página (Enlaces Oficiales)
+                </p>
+                <p id="qr-target-url" class="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                    https://colegiosagradafamilia.com.ve/
+                </p>
+            </div>
+
+            <div class="flex gap-2">
+                <button id="btn-download-qr" type="button"
+                    class="flex-1 py-2.5 px-4 rounded-xl bg-navy-900 hover:bg-navy-800 dark:bg-gold-500 dark:hover:bg-gold-400 text-white dark:text-navy-950 font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-md">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Descargar PNG</span>
+                </button>
+                <button id="btn-copy-from-qr" type="button"
+                    class="py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-navy-800 dark:hover:bg-slate-700 text-navy-900 dark:text-white font-semibold text-xs transition-all flex items-center justify-center gap-1.5">
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span>Copiar URL</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300">
+        <div class="flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-navy-900/95 dark:bg-white/95 text-white dark:text-navy-950 shadow-xl border border-gold-500/40 backdrop-blur-md text-xs font-semibold">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-gold-400 dark:text-gold-600"></i>
+            <span id="toast-message">Enlace copiado al portapapeles</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Animación escalonada
+            const staggerItems = document.querySelectorAll('.stagger-item');
+            staggerItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('visible');
+                }, 80 + index * 100);
+            });
+
+            // Notificación Toast
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            let toastTimeout;
+
+            function showToast(msg) {
+                toastMessage.textContent = msg;
+                toast.classList.remove('opacity-0', 'translate-y-4');
+                toast.classList.add('opacity-100', 'translate-y-0');
+
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                }, 2500);
+            }
+
+            // Modo Claro / Oscuro
+            const htmlEl = document.documentElement;
+            const btnTheme = document.getElementById('btn-theme');
+            const iconMoon = document.getElementById('theme-icon-moon');
+            const iconSun = document.getElementById('theme-icon-sun');
+
+            function updateThemeIcons(isDark) {
+                if (isDark) {
+                    iconMoon.classList.add('hidden');
+                    iconSun.classList.remove('hidden');
+                } else {
+                    iconSun.classList.add('hidden');
+                    iconMoon.classList.remove('hidden');
+                }
+            }
+
+            const savedTheme = localStorage.getItem('csf-theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                htmlEl.classList.add('dark');
+                updateThemeIcons(true);
+            }
+
+            btnTheme.addEventListener('click', () => {
+                const isDark = htmlEl.classList.toggle('dark');
+                updateThemeIcons(isDark);
+                localStorage.setItem('csf-theme', isDark ? 'dark' : 'light');
+                showToast(isDark ? 'Modo oscuro activado' : 'Modo claro activado');
+            });
+
+            // Badge Institucional Rotativo
+            const mottos = [
+                'Educación con Valores y Excelencia',
+                'Formando el Futuro de Falcón',
+                'Comunidad Educativa Sagrada Familia',
+                'Fe, Ciencia y Compromiso Social'
+            ];
+            let mottoIdx = 0;
+            const badgeMotto = document.getElementById('badge-motto');
+            const mottoText = document.getElementById('motto-text');
+
+            badgeMotto.addEventListener('click', () => {
+                mottoIdx = (mottoIdx + 1) % mottos.length;
+                mottoText.style.opacity = '0';
+                setTimeout(() => {
+                    mottoText.textContent = mottos[mottoIdx];
+                    mottoText.style.opacity = '1';
+                }, 150);
+            });
+
+            // Inclinación 3D en Tarjetas
+            const cards = document.querySelectorAll('.tilt-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -6;
+                    const rotateY = ((x - centerX) / centerX) * 6;
+
+                    card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                });
+
+                card.addEventListener('touchstart', () => {
+                    card.style.transform = 'scale(0.985)';
+                }, { passive: true });
+
+                card.addEventListener('touchend', () => {
+                    card.style.transform = 'scale(1)';
+                }, { passive: true });
+            });
+
+            // Copiar URL al Portapapeles
+            function copyToClipboard(text) {
+                const tempInput = document.createElement('input');
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                tempInput.setSelectionRange(0, 99999);
+                try {
+                    document.execCommand('copy');
+                    showToast('¡Enlace copiado al portapapeles!');
+                } catch (err) {
+                    showToast('No se pudo copiar el enlace');
+                }
+                document.body.removeChild(tempInput);
+            }
+
+            document.querySelectorAll('.btn-quick-copy').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const url = btn.getAttribute('data-copy-url');
+                    if (url) copyToClipboard(url);
+                });
+            });
+
+            // Modal Generador QR Multi-Canal
+            const qrModal = document.getElementById('qr-modal');
+            const qrModalContent = document.getElementById('qr-modal-content');
+            const qrContainer = document.getElementById('qrcode');
+            const qrTargetLabel = document.getElementById('qr-target-label');
+            const qrTargetUrl = document.getElementById('qr-target-url');
+            const qrTabs = document.querySelectorAll('.qr-tab');
+
+            const getCurrentPageUrl = () => {
+                const current = window.location.href;
+                if (current.startsWith('http://') || current.startsWith('https://')) {
+                    return current;
+                }
+                return 'https://colegiosagradafamilia.com.ve/';
+            };
+
+            const qrDestinations = {
+                page: {
+                    label: 'Esta Página (Enlaces Oficiales)',
+                    filename: 'QR-Enlaces-Colegio-Sagrada-Familia.png',
+                    getUrl: () => getCurrentPageUrl()
+                },
+                whatsapp: {
+                    label: 'WhatsApp Directo (+58 414-6938985)',
+                    filename: 'QR-WhatsApp-Colegio-Sagrada-Familia.png',
+                    getUrl: () => 'https://wa.me/584146938985'
+                },
+                web: {
+                    label: 'Portal Web Institucional',
+                    filename: 'QR-Web-Colegio-Sagrada-Familia.png',
+                    getUrl: () => 'https://colegiosagradafamilia.com.ve/'
+                },
+                instagram: {
+                    label: 'Instagram Oficial (@colegiosagradafamilia.pf)',
+                    filename: 'QR-Instagram-Colegio-Sagrada-Familia.png',
+                    getUrl: () => 'https://www.instagram.com/colegiosagradafamilia.pf?fqnt=MTA1Y2s5bTFpOHRvaQ=='
+                },
+                facebook: {
+                    label: 'Página de Facebook Oficial',
+                    filename: 'QR-Facebook-Colegio-Sagrada-Familia.png',
+                    getUrl: () => 'https://www.facebook.com/share/1LF5RbQYu9/?mibextid=wwXIfr'
+                }
+            };
+
+            let activeQrKey = 'page';
+
+            function renderQrCode(key) {
+                activeQrKey = key;
+                const dest = qrDestinations[key];
+                const urlToEncode = dest.getUrl();
+
+                qrTabs.forEach(tab => {
+                    const isSelected = tab.dataset.qrKey === key;
+                    if (isSelected) {
+                        tab.className = 'qr-tab active px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-navy-900 text-gold-400 dark:bg-gold-500 dark:text-navy-950 shadow-sm';
+                    } else {
+                        tab.className = 'qr-tab px-3 py-1.5 rounded-xl text-xs font-semibold transition-all bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-navy-800 dark:text-slate-300 dark:hover:bg-slate-700';
+                    }
+                });
+
+                qrTargetLabel.textContent = dest.label;
+                qrTargetUrl.textContent = urlToEncode;
+
+                qrContainer.innerHTML = '';
+                if (typeof QRCode !== 'undefined') {
+                    new QRCode(qrContainer, {
+                        text: urlToEncode,
+                        width: 175,
+                        height: 175,
+                        colorDark: "#0f294a",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            }
+
+            qrTabs.forEach(tab => {
+                tab.addEventListener('click', () => renderQrCode(tab.dataset.qrKey));
+            });
+
+            document.getElementById('btn-copy-from-qr').addEventListener('click', () => {
+                copyToClipboard(qrDestinations[activeQrKey].getUrl());
+            });
+
+            function openQrModal() {
+                renderQrCode(activeQrKey);
+                qrModal.classList.remove('hidden');
+                qrModal.classList.add('flex');
+                requestAnimationFrame(() => {
+                    qrModal.classList.remove('opacity-0');
+                    qrModalContent.classList.remove('scale-95');
+                    qrModalContent.classList.add('scale-100');
+                });
+            }
+
+            function closeQrModal() {
+                qrModal.classList.add('opacity-0');
+                qrModalContent.classList.remove('scale-100');
+                qrModalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    qrModal.classList.add('hidden');
+                    qrModal.classList.remove('flex');
+                }, 280);
+            }
+
+            document.getElementById('btn-qr').addEventListener('click', openQrModal);
+            document.getElementById('btn-close-qr').addEventListener('click', closeQrModal);
+            qrModal.addEventListener('click', (e) => {
+                if (e.target === qrModal) closeQrModal();
+            });
+
+            document.getElementById('btn-download-qr').addEventListener('click', () => {
+                const img = qrContainer.querySelector('img');
+                const canvas = qrContainer.querySelector('canvas');
+                const dataUrl = img && img.src ? img.src : (canvas ? canvas.toDataURL('image/png') : null);
+
+                if (dataUrl) {
+                    const link = document.createElement('a');
+                    link.href = dataUrl;
+                    link.download = qrDestinations[activeQrKey].filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast('Código QR descargado en PNG');
+                }
+            });
+
+            // Fondo Canvas Animado con Parallax
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+            let pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                initParticles();
+            }
+
+            function initParticles() {
+                particles = [];
+                const count = Math.min(Math.floor((width * height) / 22000), 42);
+                const shapes = ['circle', 'ring', 'diamond', 'plus'];
+
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        size: Math.random() * 6 + 3,
+                        speedX: (Math.random() - 0.5) * 0.35,
+                        speedY: (Math.random() - 0.5) * 0.35,
+                        depth: Math.random() * 0.8 + 0.2,
+                        shape: shapes[Math.floor(Math.random() * shapes.length)],
+                        isGold: Math.random() > 0.5,
+                        rotation: Math.random() * Math.PI * 2,
+                        rotSpeed: (Math.random() - 0.5) * 0.01
+                    });
+                }
+            }
+
+            window.addEventListener('mousemove', (e) => {
+                pointer.targetX = (e.clientX - width / 2) * 0.045;
+                pointer.targetY = (e.clientY - height / 2) * 0.045;
+            });
+
+            window.addEventListener('deviceorientation', (e) => {
+                if (e.gamma !== null && e.beta !== null) {
+                    pointer.targetX = Math.max(-30, Math.min(30, e.gamma)) * 0.8;
+                    pointer.targetY = Math.max(-30, Math.min(30, e.beta - 45)) * 0.8;
+                }
+            });
+
+            function drawParticles() {
+                ctx.clearRect(0, 0, width, height);
+                const isDark = htmlEl.classList.contains('dark');
+
+                pointer.x += (pointer.targetX - pointer.x) * 0.06;
+                pointer.y += (pointer.targetY - pointer.y) * 0.06;
+
+                particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.rotation += p.rotSpeed;
+
+                    if (p.x < -20) p.x = width + 20;
+                    if (p.x > width + 20) p.x = -20;
+                    if (p.y < -20) p.y = height + 20;
+                    if (p.y > height + 20) p.y = -20;
+
+                    const drawX = p.x + pointer.x * p.depth;
+                    const drawY = p.y + pointer.y * p.depth;
+
+                    ctx.save();
+                    ctx.translate(drawX, drawY);
+                    ctx.rotate(p.rotation);
+
+                    if (p.isGold) {
+                        ctx.fillStyle = isDark ? 'rgba(212, 175, 55, 0.22)' : 'rgba(212, 175, 55, 0.28)';
+                        ctx.strokeStyle = isDark ? 'rgba(212, 175, 55, 0.28)' : 'rgba(212, 175, 55, 0.35)';
+                    } else {
+                        ctx.fillStyle = isDark ? 'rgba(96, 165, 250, 0.16)' : 'rgba(15, 41, 74, 0.13)';
+                        ctx.strokeStyle = isDark ? 'rgba(96, 165, 250, 0.22)' : 'rgba(15, 41, 74, 0.18)';
+                    }
+
+                    ctx.lineWidth = 1.5;
+
+                    if (p.shape === 'circle') {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size * 0.6, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (p.shape === 'ring') {
+                        ctx.beginPath();
+                        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                        ctx.stroke();
+                    } else if (p.shape === 'diamond') {
+                        ctx.beginPath();
+                        ctx.moveTo(0, -p.size);
+                        ctx.lineTo(p.size, 0);
+                        ctx.lineTo(0, p.size);
+                        ctx.lineTo(-p.size, 0);
+                        ctx.closePath();
+                        ctx.stroke();
+                    } else if (p.shape === 'plus') {
+                        ctx.beginPath();
+                        ctx.moveTo(-p.size * 0.7, 0);
+                        ctx.lineTo(p.size * 0.7, 0);
+                        ctx.moveTo(0, -p.size * 0.7);
+                        ctx.lineTo(0, p.size * 0.7);
+                        ctx.stroke();
+                    }
+
+                    ctx.restore();
+                });
+
+                requestAnimationFrame(drawParticles);
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            drawParticles();
+        });
+    </script>
+</body>
+</html>
